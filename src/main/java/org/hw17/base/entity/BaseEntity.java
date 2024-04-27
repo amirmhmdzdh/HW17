@@ -14,9 +14,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Getter
 @Setter
-@SuperBuilder
-@ToString
-@EqualsAndHashCode
 public class BaseEntity<ID extends Serializable> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
