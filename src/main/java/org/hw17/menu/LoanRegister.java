@@ -28,34 +28,36 @@ public class LoanRegister {
     private static BankAccountService bankAccountService = ApplicationContext.getBankAccountService();
 
     public static void registryMenu() {
+        try {
+            System.out.println(" Pleas fill the required fields >>>> ");
+            firstName(savestudent);
+            lastName(savestudent);
+            fatherName(savestudent);
+            motherName(savestudent);
+            nationalCode(savestudent);
+            birthDate(savestudent);
+            province(savestudent);
+            maritalStatus(savestudent);
+            if (savestudent.isMarried())
+                spouseInformation(savestudent);
+            universityType(savestudent);
+            entranceYear(savestudent);
+            studentCode(savestudent);
+            if (savestudent.getUniversityType() == UniversityType.STATE)
+                acceptanceType(savestudent);
+            academicDegree(savestudent);
+            residenceStatus(savestudent);
+            if (!savestudent.isInDorm())
+                address(savestudent);
+            bankAccount(savestudent);
+            savestudent.setGraduateYear(savestudent.getEntranceYear() + savestudent.getAcademicGrade().getGraduateDuration());
 
-        System.out.println(" Pleas fill the required fields >>>> ");
-        firstName(savestudent);
-        lastName(savestudent);
-        fatherName(savestudent);
-        motherName(savestudent);
-        nationalCode(savestudent);
-        birthDate(savestudent);
-        province(savestudent);
-        maritalStatus(savestudent);
-        if (savestudent.isMarried())
-            spouseInformation(savestudent);
-        universityType(savestudent);
-        entranceYear(savestudent);
-        studentCode(savestudent);
-        if (savestudent.getUniversityType() == UniversityType.STATE)
-            acceptanceType(savestudent);
-        academicDegree(savestudent);
-        residenceStatus(savestudent);
-        if (!savestudent.isInDorm())
-            address(savestudent);
-        bankAccount(savestudent);
-        savestudent.setGraduateYear(savestudent.getEntranceYear() + savestudent.getAcademicGrade().getGraduateDuration());
-
-        savestudent.setUsernameAndPassword(savestudent);
-        Student student = studentService.saveOrUpdate(savestudent);
-        savestudent.showUsernameAndPassword(student);
-
+            savestudent.setUsernameAndPassword(savestudent);
+            Student student = studentService.saveOrUpdate(savestudent);
+            savestudent.showUsernameAndPassword(student);
+        } catch (Exception e) {
+            System.out.println("An exception occurred: " + e.getMessage());
+        }
 
     }
 
@@ -246,7 +248,8 @@ public class LoanRegister {
                             result.add(debt.getId() + " - type = " + debt.getLoan().getLoanType() + "\t"
                                     + PersianDate.fromGregorian(debt.getPaidDate()));
                         });
-                        System.out.println("Paid Debts " + result);
+                        System.out.println("Paid Debts :");
+                        result.forEach(System.out::println);
                     }
                     case "2" -> {
                         List<String> result = new ArrayList<>();
@@ -482,11 +485,13 @@ public class LoanRegister {
             int year = scanner.nextInt();
             scanner.nextLine();
             try {
-                BankAccount bankAccount = bankAccountService.findByCardNumber(cardNumber);
+                BankAccount bankAccount = bankAccountService.findByCardNumber(cardNumber,cvv2);
                 if (bankAccount.getCvv2().equals(cvv2) || bankAccount.getExpirationMonth() != month || bankAccount.getExpirationYear() != year)
                     throw new NotFoundExeption("Invalid card properties!");
 
-                System.out.println("Choose debt id " + result);
+                for (String item : result) {
+                    System.out.println("Choose debt id " + item);
+                }
                 System.out.println("Enter Debt id ");
                 long debtId = scanner.nextLong();
                 scanner.nextLine();
@@ -497,6 +502,11 @@ public class LoanRegister {
                 debt.setPaidDate(ApplicationContext.currentDate);
                 bankAccountService.saveOrUpdate(bankAccount);
                 debtService.saveOrUpdate(debt);
+                System.out.println();
+                System.out.println("=================================================================================");
+                System.out.println("sir or madam " + student.getLastName() + " Thank you for your payment.\n" +
+                        " On behalf of BANK : " + bankAccount.getBank().name());
+                System.out.println("=================================================================================");
 
 
             } catch (Exception e) {

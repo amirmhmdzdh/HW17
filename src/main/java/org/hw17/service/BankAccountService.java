@@ -5,6 +5,6 @@ import org.hw17.model.BankAccount;
 
 public interface BankAccountService extends BaseService<BankAccount, Long> {
 
-    BankAccount findByCardNumber(String cardNumber);
+    BankAccount findByCardNumber(String cardNumber,int cvv2);
 
 }

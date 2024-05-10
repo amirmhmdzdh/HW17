@@ -22,13 +22,14 @@ public class BankAccountRepositoryImpl extends BaseRepositoryImpel<BankAccount, 
     }
 
     @Override
-    public Optional<BankAccount> findByCardNumber(String cardNumber) {
+    public Optional<BankAccount> findByCardNumber(String cardNumber, int cvv2) {
         Session session = SessionFactorySingleton.getInstance().getCurrentSession();
 
-        String hql = "select b from BankAccount b where cardNumber=:c";
+        String hql = "select b from BankAccount b where b.cardNumber=:c and b.cvv2=:cv";
 
         Query<BankAccount> query = session.createQuery(hql, BankAccount.class);
         query.setParameter("c", cardNumber);
+        query.setParameter("cv", cvv2);
 
         return Optional.ofNullable(query.getSingleResult());
     }

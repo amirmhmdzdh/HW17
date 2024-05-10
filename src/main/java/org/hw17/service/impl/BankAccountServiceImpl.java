@@ -19,11 +19,11 @@ public class BankAccountServiceImpl extends BaseServiceImpel<BankAccount, Long, 
     }
 
     @Override
-    public BankAccount findByCardNumber(String cardNumber) {
+    public BankAccount findByCardNumber(String cardNumber,int cvv2) {
         Transaction transaction = null;
         try (Session session = sessionFactory.getCurrentSession()) {
             transaction = session.beginTransaction();
-            Optional<BankAccount> byCardNumber = repository.findByCardNumber(cardNumber);
+            Optional<BankAccount> byCardNumber = repository.findByCardNumber(cardNumber,cvv2);
             transaction.commit();
             session.close();
             return byCardNumber.orElseThrow(() ->

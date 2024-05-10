@@ -26,6 +26,7 @@ public class BankAccount extends BaseEntity<Long> {
 
 
     @Pattern(regexp = "^[0-9]{3,4}$", message = "Invalid cvv2 number!")
+    @Column(unique = true)
     private String cvv2;
 
 

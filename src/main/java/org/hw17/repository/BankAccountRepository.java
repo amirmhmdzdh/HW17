@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface BankAccountRepository extends BaseRepository<BankAccount, Long> {
 
-    Optional<BankAccount> findByCardNumber(String cardNumber);
+    Optional<BankAccount> findByCardNumber(String cardNumber,int cvv2);
 
 
 }
