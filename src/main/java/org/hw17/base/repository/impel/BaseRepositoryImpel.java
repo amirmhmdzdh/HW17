@@ -2,13 +2,11 @@ package org.hw17.base.repository.impel;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
 import org.hw17.base.entity.BaseEntity;
 import org.hw17.base.repository.BaseRepository;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Optional;
 
 public abstract class BaseRepositoryImpel<T extends BaseEntity<ID>, ID extends Serializable>
         implements BaseRepository<T, ID> {
@@ -26,13 +24,15 @@ public abstract class BaseRepositoryImpel<T extends BaseEntity<ID>, ID extends S
             session.persist(entity);
         else
             session.merge(entity);
-        return entity;    }
+        return entity;
+    }
 
     @Override
-    public Optional<T> findById(ID id) {
+    public T findById(ID id) {
         Session session = sessionFactory.getCurrentSession();
 
-        return Optional.ofNullable(session.get(getEntityClass(), id));    }
+        return session.get(getEntityClass(), id);
+    }
 
     public abstract Class<T> getEntityClass();
 
@@ -43,13 +43,8 @@ public abstract class BaseRepositoryImpel<T extends BaseEntity<ID>, ID extends S
     }
 
     @Override
-    public List<T> findAll() {
-        Session session = sessionFactory.getCurrentSession();
-        Query<T> query = session.createQuery(String.format("from %s", getEntityClass()));
-        return query.getResultList();    }
-
-    @Override
     public List<T> showAll() {
         Session session = sessionFactory.getCurrentSession();
-        return session.createQuery("FROM " + getEntityClass().getSimpleName(), getEntityClass()).getResultList();    }
+        return session.createQuery("FROM " + getEntityClass().getSimpleName(), getEntityClass()).getResultList();
+    }
 }
