@@ -5,6 +5,7 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hw17.model.BankAccount;
 import org.hw17.model.Debt;
+import org.hw17.model.Loan;
 import org.hw17.model.Student;
 
 public class SessionFactorySingleton {
@@ -19,9 +20,9 @@ public class SessionFactorySingleton {
         private static final SessionFactory INSTANCE =
                 new MetadataSources(registry)
                         .addAnnotatedClass(Student.class)
-                        .addAnnotatedClass(Long.class)
-                        .addAnnotatedClass(Debt.class)
                         .addAnnotatedClass(BankAccount.class)
+                        .addAnnotatedClass(Loan.class)
+                        .addAnnotatedClass(Debt.class)
                         .buildMetadata()
                         .buildSessionFactory();
     }
