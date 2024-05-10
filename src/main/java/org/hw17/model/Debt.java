@@ -3,12 +3,10 @@ package org.hw17.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import org.hw17.base.entity.BaseEntity;
 
 import java.time.LocalDate;
 
-@SuperBuilder
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,7 +22,6 @@ public class Debt extends BaseEntity<Long> {
     @ManyToOne
     private Loan loan;
 
-
     private boolean isPaid;
 
     private LocalDate paidDate;
@@ -34,3 +31,4 @@ public class Debt extends BaseEntity<Long> {
         this.isPaid = false;
     }
 }
+

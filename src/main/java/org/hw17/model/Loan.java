@@ -1,14 +1,10 @@
 package org.hw17.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 import org.hw17.base.entity.BaseEntity;
 import org.hw17.model.enums.AcademicGrade;
 import org.hw17.model.enums.LoanType;
@@ -16,7 +12,6 @@ import org.hw17.model.enums.Province;
 
 import java.time.LocalDate;
 
-@SuperBuilder
 @Getter
 @Setter
 @AllArgsConstructor
@@ -29,7 +24,7 @@ public class Loan extends BaseEntity<Long> {
 
     private Long amount;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Student borrower;
 
     private LocalDate registrationDate;
@@ -77,10 +72,13 @@ public class Loan extends BaseEntity<Long> {
         }
     }
 
+    @Override
     public String toString() {
-        return "Loan(loanType=" + this.getLoanType() +
-                ", amount=" + this.getAmount() +
-                ", borrowerId=" + this.getBorrower().getId() +
-                ", registrationDate=" + this.getRegistrationDate() + ")";
+        return "Loan{" +
+                "loanType=" + loanType +
+                ", amount=" + amount +
+                ", borrower=" + borrower +
+                ", registrationDate=" + registrationDate +
+                '}';
     }
 }

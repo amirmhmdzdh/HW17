@@ -2,20 +2,18 @@ package org.hw17.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import org.hibernate.validator.constraints.Range;
 import org.hw17.base.entity.BaseEntity;
 import org.hw17.model.enums.Bank;
 
 import javax.validation.constraints.Pattern;
 
-@SuperBuilder
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity
+@ToString
 public class BankAccount extends BaseEntity<Long> {
 
     @Enumerated(value = EnumType.STRING)
@@ -35,11 +33,11 @@ public class BankAccount extends BaseEntity<Long> {
     private int expirationMonth;
 
 
-    @Range(min = 1300, max = 1500, message = "Invalid card expiration year format!")
+    @Range(min = 1400, max = 1500, message = "Invalid card expiration year format!")
     private int expirationYear;
 
 
-    @OneToOne(mappedBy = "bankAccount")
+    @OneToOne(mappedBy = "bankAccount", fetch = FetchType.EAGER)
     private Student owner;
 
 
