@@ -87,6 +87,7 @@ public class BaseServiceImpel<T extends BaseEntity<ID>,
             session.close();
             return findAll;
         } catch (Exception ignored) {
+            System.out.println(ignored.getMessage());
             return null;
         }
     }
