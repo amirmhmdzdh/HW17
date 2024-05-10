@@ -6,14 +6,13 @@ import org.hibernate.Transaction;
 import org.hw17.base.entity.BaseEntity;
 import org.hw17.base.repository.BaseRepository;
 import org.hw17.base.service.BaseService;
-import org.hw17.exception.NotFoundExeption;
 import org.hw17.utility.EntityValidator;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Optional;
+
 import java.util.Set;
 
 public class BaseServiceImpel<T extends BaseEntity<ID>,
@@ -50,21 +49,21 @@ public class BaseServiceImpel<T extends BaseEntity<ID>,
         } catch (Exception e) {
             assert transaction != null;
             transaction.rollback();
+            System.out.println(e.getMessage());
             return null;
         }
     }
 
     @Override
-    public Optional<T> findById(ID id) {
+    public T findById(ID id) {
         try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
-            Optional<T> findEntity = repository.findById(id);
-            findEntity.orElseThrow(() -> new NotFoundExeption(String.format("Entity with id : %s not found", id)));
+            T entity = repository.findById(id);
             session.getTransaction().commit();
-            session.close();
-            return findEntity;
+            return entity;
         } catch (Exception e) {
-            return Optional.empty();
+            System.out.println(e.getMessage());
+            return null;
         }
     }
 
@@ -72,8 +71,6 @@ public class BaseServiceImpel<T extends BaseEntity<ID>,
     public void delete(T entity) {
         try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
-            // Optional<T> findEntity = repository.findById(id);
-            // findEntity.orElseThrow(() -> new NotFoundExeption(String.format("Entity with id : %s not found", id)));
             repository.delete(entity);
             session.getTransaction().commit();
         } catch (Exception ignored) {
