@@ -154,7 +154,10 @@ public class LoanRegister {
                                 + loan.getLoanType() + " - registered in:  "
                                 + PersianDate.fromGregorian(loan.getRegistrationDate())
                                 + " - amount: " + loan.getAmount()));
-                        System.out.println("Select each of the taken loans to see debts " + loanStringList);
+
+                        System.out.println("Select each of the taken loans to see debts :");
+                        loanStringList.forEach(System.out::println);
+
                         if (!loans.isEmpty()) {
                             System.out.println("Loan id ->");
                             Long loanId = scanner.nextLong();
@@ -485,7 +488,7 @@ public class LoanRegister {
             int year = scanner.nextInt();
             scanner.nextLine();
             try {
-                BankAccount bankAccount = bankAccountService.findByCardNumber(cardNumber,cvv2);
+                BankAccount bankAccount = bankAccountService.findByCardNumber(cardNumber, cvv2);
                 if (bankAccount.getCvv2().equals(cvv2) || bankAccount.getExpirationMonth() != month || bankAccount.getExpirationYear() != year)
                     throw new NotFoundExeption("Invalid card properties!");
 
