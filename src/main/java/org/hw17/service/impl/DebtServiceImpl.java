@@ -12,17 +12,22 @@ import org.hw17.model.Loan;
 import org.hw17.model.Student;
 import org.hw17.repository.DebtRepository;
 import org.hw17.service.DebtService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 public class DebtServiceImpl extends BaseServiceImpel<Debt, Long, DebtRepository>
         implements DebtService {
 
+    private final Logger logger;
+
     public DebtServiceImpl(DebtRepository repository, SessionFactory sessionFactory) {
         super(repository, sessionFactory);
+        logger = LoggerFactory.getLogger(DebtServiceImpl.class);
+
     }
 
     @Override
@@ -86,6 +91,7 @@ public class DebtServiceImpl extends BaseServiceImpel<Debt, Long, DebtRepository
             if (transaction != null) {
                 transaction.rollback();
             }
+            logger.error("Error occurred while retrieving paid debts: " + e.getMessage(), e);
             System.out.println(e.getMessage());
             return null;
         }
@@ -104,6 +110,7 @@ public class DebtServiceImpl extends BaseServiceImpel<Debt, Long, DebtRepository
             if (transaction != null) {
                 transaction.rollback();
             }
+            logger.error("Error occurred while retrieving unpaid debts: " + e.getMessage(), e);
             System.out.println(e.getMessage());
             return null;
         }
@@ -123,6 +130,7 @@ public class DebtServiceImpl extends BaseServiceImpel<Debt, Long, DebtRepository
             if (transaction != null) {
                 transaction.rollback();
             }
+            logger.error("Error occurred while retrieving monthly unpaid debts: " + e.getMessage(), e);
             System.out.println(e.getMessage());
             return null;
         }
@@ -143,9 +151,9 @@ public class DebtServiceImpl extends BaseServiceImpel<Debt, Long, DebtRepository
             if (transaction != null) {
                 transaction.rollback();
             }
+            logger.error("Error occurred while finding debts by loan id: " + e.getMessage(), e);
             System.out.println(e.getMessage());
             return null;
         }
-
     }
 }

@@ -1,5 +1,6 @@
 package org.hw17.service.impl;
 
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -12,6 +13,8 @@ import org.hw17.model.Student;
 import org.hw17.repository.StudentRepository;
 import org.hw17.service.StudentService;
 import org.hw17.utility.ApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,9 +23,11 @@ import java.util.List;
 public class StudentServiceImpl
         extends BaseServiceImpel<Student, Long, StudentRepository>
         implements StudentService {
+    private final Logger logger;
 
     public StudentServiceImpl(StudentRepository repository, SessionFactory sessionFactory) {
         super(repository, sessionFactory);
+        logger = LoggerFactory.getLogger(StudentServiceImpl.class);
 
     }
 
@@ -39,6 +44,7 @@ public class StudentServiceImpl
             if (transaction != null) {
                 transaction.rollback();
             }
+            logger.error("Error occurred while checking username and password: " + e.getMessage(), e);
             System.out.println(e.getMessage());
             return null;
         }
@@ -89,6 +95,7 @@ public class StudentServiceImpl
             if (transaction != null) {
                 transaction.rollback();
             }
+            logger.error("Error occurred while finding student by national code: " + e.getMessage(), e);
             System.out.println(e.getMessage());
             return null;
         }
@@ -107,6 +114,7 @@ public class StudentServiceImpl
             if (transaction != null) {
                 transaction.rollback();
             }
+            logger.error("Error occurred while finding bank account for student: " + e.getMessage(), e);
             System.out.println(e.getMessage());
             return null;
         }

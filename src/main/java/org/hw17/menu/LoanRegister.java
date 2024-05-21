@@ -13,12 +13,14 @@ import org.hw17.service.DebtService;
 import org.hw17.service.LoanService;
 import org.hw17.service.StudentService;
 import org.hw17.utility.ApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.util.*;
 
 public class LoanRegister {
-
+    private static final Logger logger = LoggerFactory.getLogger(LoanRegister.class);
     private static Scanner scanner = new Scanner(System.in);
     private static StudentService studentService = ApplicationContext.getStudentService();
     private static LoanService loanService = ApplicationContext.getLoanService();
@@ -30,6 +32,7 @@ public class LoanRegister {
     public static void registryMenu() {
         try {
             System.out.println(" Pleas fill the required fields >>>> ");
+            logger.info("Please fill the required fields >>>>");
             firstName(savestudent);
             lastName(savestudent);
             fatherName(savestudent);
@@ -56,13 +59,13 @@ public class LoanRegister {
             Student student = studentService.saveOrUpdate(savestudent);
             savestudent.showUsernameAndPassword(student);
         } catch (Exception e) {
+            logger.error("An exception occurred: {}", e.getMessage(), e);
             System.out.println("An exception occurred: " + e.getMessage());
         }
-
     }
 
     public static void signIn() {
-
+        logger.info("User sign-in initiated ");
         System.out.println("Username ->> ");
         String userName = scanner.next();
         scanner.nextLine();
@@ -73,14 +76,16 @@ public class LoanRegister {
 
         Student valid = studentService.checkUsernameAndPassword(userName, password);
         if (valid != null) {
+            logger.info("User logged in successfully " + userName);
             System.out.println(">>>> Welcome to your user panel <<<<");
             showLoanMenu(valid);
         } else
-            System.out.println(">>>> Username or password is incorrect <<<<");
+            logger.warn("Invalid username or password");
+        System.out.println(">>>> Username or password is incorrect <<<<");
     }
 
     public static void showLoanMenu(Student student) {
-
+        logger.info("Loan menu displayed for student: {}", student.getUsername());
         boolean loop = true;
 
         while (loop) {
@@ -97,25 +102,32 @@ public class LoanRegister {
                 switch (input) {
 
                     case "1" -> {
+                        logger.info("User selected Loan Register");
                         if (!studentService.isGraduated(student)) {
                             if (studentService.isRegistrationOpen())
-                                showLoanRegisterMenu(student);
+                            showLoanRegisterMenu(student);
                         }
                     }
                     case "2" -> {
+                        logger.info("User selected Loan Repay");
                         if (studentService.canRepay(student)) {
                             showRepayMenu(student);
                         }
                     }
 
                     case "3" -> {
+                        logger.info("User selected Logout");
                         return;
                     }
-                    default -> System.out.println(" <<< Wrong entry >>>");
+                    default -> {
+                        logger.warn("Invalid input: {}", input);
+                        System.out.println(" <<< Wrong entry >>>");
+                    }
                 }
 
 
             } catch (Exception e) {
+                logger.error("An exception occurred: {}", e.getMessage(), e);
                 if (e instanceof InputMismatchException)
                     System.out.println("Wrong entry!");
                 else
@@ -124,10 +136,8 @@ public class LoanRegister {
             }
         }
     }
-
-
     public static void showLoanRegisterMenu(Student student) {
-
+        logger.info("Loan register menu displayed for student: {}", student.getUsername());
         while (true) {
             try {
                 System.out.println("==========================================");
@@ -147,7 +157,7 @@ public class LoanRegister {
                 String input = scanner.nextLine();
                 switch (input) {
                     case "1" -> {
-
+                        logger.info("User selected 'See registered loans and debts'");
                         List<Loan> loans = loanService.getLoansOf(student);
                         List<String> loanStringList = new ArrayList<>();
                         loans.forEach(loan -> loanStringList.add("id: " + loan.getId() + " - type: "
@@ -183,6 +193,7 @@ public class LoanRegister {
                         }
                     }
                     case "2" -> {
+                        logger.info("User selected 'Register for a loan'");
                         if (!possibleLoans.isEmpty()) {
                             printListWithSelect(toBePrinted);
                             int selectedLoanIndex;
@@ -213,16 +224,21 @@ public class LoanRegister {
                         }
                     }
                     case "3" -> {
+                        logger.info("User selected 'Back'");
                         return;
 
                     }
-                    default -> System.out.println("Wrong entry!");
+                    default -> {
+                        logger.warn("Invalid input: {}", input);
+                        System.out.println("Wrong entry!");
+                    }
                 }
             } catch (Exception e) {
+                logger.error("An exception occurred: {}", e.getMessage(), e);
                 if (e instanceof InputMismatchException)
-                    e.printStackTrace();
+                    System.out.println(e.getMessage());
                 else
-                    e.printStackTrace();
+                    System.out.println(e.getMessage());
                 scanner.nextLine();
             }
         }
@@ -230,7 +246,7 @@ public class LoanRegister {
     }
 
     public static void showRepayMenu(Student student) {
-
+        logger.info("Repay menu displayed for student: {}", student.getUsername());
         while (true) {
             try {
                 System.out.println("==========================================");
@@ -246,6 +262,7 @@ public class LoanRegister {
                 switch (input) {
 
                     case "1" -> {
+                        logger.info("User selected 'List of paid debts'");
                         List<String> result = new ArrayList<>();
                         debtService.getPaidDebts(student).forEach(debt -> {
                             result.add(debt.getId() + " - type = " + debt.getLoan().getLoanType() + "\t"
@@ -255,6 +272,7 @@ public class LoanRegister {
                         result.forEach(System.out::println);
                     }
                     case "2" -> {
+                        logger.info("User selected 'List of all unpaid debts'");
                         List<String> result = new ArrayList<>();
                         debtService.getUnpaidDebts(student).forEach(debt ->
                                 result.add(debt.getId() + "- " + PersianDate.fromGregorian(debt.getDueDate())
@@ -264,6 +282,7 @@ public class LoanRegister {
                         result.forEach(System.out::println);
                     }
                     case "3" -> {
+                        logger.info("User selected 'Unpaid debts list of a specific month'");
                         List<String> result = new ArrayList<>();
 
                         System.out.println("Specify the year and month of debts");
@@ -279,15 +298,21 @@ public class LoanRegister {
                         });
                         System.out.println("Specified month unpaid Debts " + result);
                     }
-                    case "4" -> payDebt(student);
-
+                    case "4" -> {
+                        logger.info("User selected 'Pay debt'");
+                        payDebt(student);
+                    }
                     case "5" -> {
+                        logger.info("User selected 'BACK'");
                         return;
                     }
-                    default -> System.out.println(" <<< Wrong entry >>>");
+                    default -> {
+                        logger.warn("Invalid input: {}", input);
+                        System.out.println(" <<< Wrong entry >>>");
+                    }
                 }
-
             } catch (Exception e) {
+                logger.error("An exception occurred: {}", e.getMessage(), e);
                 if (e instanceof InputMismatchException)
                     System.out.println(">>> Wrong entry <<<");
                 else
@@ -295,8 +320,6 @@ public class LoanRegister {
                 scanner.nextLine();
             }
         }
-
-
     }
 
     //======================================================Methods=====================================================
@@ -438,6 +461,7 @@ public class LoanRegister {
             scanner.nextLine();
             return bankAccount;
         } catch (Exception e) {
+            logger.error("An error occurred: {}", e.getMessage());
             System.out.println(e.getMessage());
             return null;
         }
@@ -462,6 +486,7 @@ public class LoanRegister {
             return PersianDate.of(year, month, day).toGregorian();
 
         } catch (Exception e) {
+            logger.error("An error occurred: {}", e.getMessage());
             System.out.println(e.getMessage());
             scanner.nextLine();
             throw new InvalidDateException("<<< Invalid date entry >>>");
@@ -513,6 +538,7 @@ public class LoanRegister {
 
 
             } catch (Exception e) {
+                logger.error("An error occurred: {}", e.getMessage());
                 if (e instanceof InputMismatchException)
                     System.out.println(">>> Wrong entry <<<");
                 else

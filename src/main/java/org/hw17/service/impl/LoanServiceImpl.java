@@ -10,14 +10,18 @@ import org.hw17.model.Student;
 import org.hw17.repository.LoanRepository;
 import org.hw17.service.LoanService;
 import org.hw17.utility.ApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class LoanServiceImpl extends BaseServiceImpel<Loan, Long, LoanRepository>
         implements LoanService {
+    private final Logger logger;
 
     public LoanServiceImpl(LoanRepository repository, SessionFactory sessionFactory) {
         super(repository, sessionFactory);
+        logger = LoggerFactory.getLogger(LoanServiceImpl.class);
 
     }
 
@@ -41,6 +45,7 @@ public class LoanServiceImpl extends BaseServiceImpel<Loan, Long, LoanRepository
             if (transaction != null) {
                 transaction.rollback();
             }
+            logger.error("Error occurred while retrieving loans of student: " + e.getMessage(), e);
             System.out.println(e.getMessage());
             return null;
         }
