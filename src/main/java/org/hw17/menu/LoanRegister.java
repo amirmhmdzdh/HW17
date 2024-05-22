@@ -76,7 +76,7 @@ public class LoanRegister {
 
         Student valid = studentService.checkUsernameAndPassword(userName, password);
         if (valid != null) {
-            logger.info("User logged in successfully " + userName);
+            logger.info("User logged in successfully: {} " , userName);
             System.out.println(">>>> Welcome to your user panel <<<<");
             showLoanMenu(valid);
         } else
